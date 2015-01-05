@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 import os
 import errno
-import struct
 import socket
 from select import select
 
-
-from PEC import pec
-from PEC import netlink
-from PEC import connector
-from PEC.pec import pec_control, pec_unpack
+import pec
+from pec import netlink
+from pec import connector
 
 def hex_dump(data):
     """
@@ -41,16 +38,16 @@ except socket.error as (_errno, errmsg):
         raise SystemExit(1)
     raise
 
-pec_control(s, listen=True)
+pec.control(s, listen=True)
 
 while True:
     (readable, w, e) = select([s],[],[])
     buf = readable[0].recv(256)
-    event = pec_unpack(buf)
-    event["what"] = pec.pec_events_rev.get(event.what)
+    event = pec.unpack(buf)
+    event["what"] = pec.process_events_rev.get(event.what)
     print event
 
-pec_control(s, listen=False)
+pec.control(s, listen=False)
 
 s.close()
 

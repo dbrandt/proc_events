@@ -1,7 +1,7 @@
 import struct
-import PEC
-from . import netlink
-from pec import DictWrapper
+
+from . import DictWrapper
+
 CN_IDX_PROC = 0x1
 CN_VAL_PROC = 0x1
 

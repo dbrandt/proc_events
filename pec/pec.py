@@ -6,7 +6,7 @@ from select import select
 
 from . import connector
 from . import netlink
-import pec import DictWrapper
+from pec import DictWrapper
 
 PROC_CN_MCAST_LISTEN = 0x1
 PROC_CN_MCAST_IGNORE = 0x2
@@ -18,15 +18,15 @@ PROC_EVENT_UID = 0x00000004
 PROC_EVENT_GID = 0x00000040
 PROC_EVENT_EXIT = 0x80000000
 
-pec_events = {'PROC_EVENT_NONE': PROC_EVENT_NONE,
-              'PROC_EVENT_FORK': PROC_EVENT_FORK,
-              'PROC_EVENT_EXEC': PROC_EVENT_EXEC,
-              'PROC_EVENT_UID': PROC_EVENT_UID,
-              'PROC_EVENT_GID': PROC_EVENT_GID,
-              'PROC_EVENT_EXIT': PROC_EVENT_EXIT}
+process_events = {'PROC_EVENT_NONE': PROC_EVENT_NONE,
+                  'PROC_EVENT_FORK': PROC_EVENT_FORK,
+                  'PROC_EVENT_EXEC': PROC_EVENT_EXEC,
+                  'PROC_EVENT_UID': PROC_EVENT_UID,
+                  'PROC_EVENT_GID': PROC_EVENT_GID,
+                  'PROC_EVENT_EXIT': PROC_EVENT_EXIT}
 
-pec_events_rev = dict(zip(pec_events.values(),
-                          pec_events.keys()))
+process_events_rev = dict(zip(process_events.values(),
+                              process_events.keys()))
 
 base_proc_event = struct.Struct("=2IL")
 
@@ -46,7 +46,7 @@ def pec_bind(s):
     common one will be EPERM since you need root privileges to
     bind to the connector.
     """
-    s.bind((os.getpid(), CN_IDX_PROC))
+    s.bind((os.getpid(), connector.CN_IDX_PROC))
 
 def pec_control(s, listen=False):
     """
@@ -141,5 +141,5 @@ def pec_loop(plist=process_list):
         (readable, w, e) = select([s],[],[])
         buf = readable[0].recv(256)
         event = pec_unpack(buf)
-        event["what"] = pec.pec_events_rev.get(event.what)
+        event["what"] = process_events_rev.get(event.what)
         yield event
