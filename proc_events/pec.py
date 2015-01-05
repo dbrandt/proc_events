@@ -15,14 +15,20 @@ PROC_EVENT_FORK = 0x00000001
 PROC_EVENT_EXEC = 0x00000002
 PROC_EVENT_UID = 0x00000004
 PROC_EVENT_GID = 0x00000040
+PROC_EVENT_SID  = 0x00000080
+PROC_EVENT_PTRACE = 0x00000100
+PROC_EVENT_COMM = 0x00000200
 PROC_EVENT_EXIT = 0x80000000
 
-process_events = {'PROC_EVENT_NONE': PROC_EVENT_NONE,
-                  'PROC_EVENT_FORK': PROC_EVENT_FORK,
-                  'PROC_EVENT_EXEC': PROC_EVENT_EXEC,
-                  'PROC_EVENT_UID': PROC_EVENT_UID,
-                  'PROC_EVENT_GID': PROC_EVENT_GID,
-                  'PROC_EVENT_EXIT': PROC_EVENT_EXIT}
+process_events = {"PROC_EVENT_NONE": PROC_EVENT_NONE,
+                  "PROC_EVENT_FORK": PROC_EVENT_FORK,
+                  "PROC_EVENT_EXEC": PROC_EVENT_EXEC,
+                  "PROC_EVENT_UID": PROC_EVENT_UID,
+                  "PROC_EVENT_GID": PROC_EVENT_GID,
+                  "PROC_EVENT_SID": PROC_EVENT_SID,
+                  "PROC_EVENT_PTRACE": PROC_EVENT_PTRACE,
+                  "PROC_EVENT_COMM": PROC_EVENT_COMM,
+                  "PROC_EVENT_EXIT": PROC_EVENT_EXIT}
 
 process_events_rev = dict(zip(process_events.values(),
                               process_events.keys()))
@@ -34,6 +40,9 @@ event_struct_map = {PROC_EVENT_NONE: struct.Struct("=I"),
                     PROC_EVENT_EXEC: struct.Struct("=2I"),
                     PROC_EVENT_UID: struct.Struct("=4I"),
                     PROC_EVENT_GID: struct.Struct("=4I"),
+                    PROC_EVENT_SID: struct.Struct("=2I"),
+                    PROC_EVENT_PTRACE: struct.Struct("=4I"),
+                    PROC_EVENT_COMM: struct.Struct("=2I16s"),
                     PROC_EVENT_EXIT: struct.Struct("=4I")}
 
 process_list = []
@@ -92,9 +101,15 @@ def pec_unpack(data):
     elif event[0] == PROC_EVENT_EXEC:
         fields += ["process_pid", "process_tgid"]
     elif event[0] == PROC_EVENT_UID:
-        fields += ["process_pid", "process_tgid", "euid", "ruid"]
+        fields += ["process_pid", "process_tgid", "ruid", "rgid"]
     elif event[0] == PROC_EVENT_GID:
-        fields += ["process_pid", "process_tgid", "egid", "rgid"]
+        fields += ["process_pid", "process_tgid", "euid", "egid"]
+    elif event[0] == PROC_EVENT_SID:
+        fields += ["process_pid", "process_tgid"]
+    elif event[0] == PROC_EVENT_PTRACE:
+        fields += ["process_pid", "process_tgid", "tracer_pid", "tracer_tgid"]
+    elif event[0] == PROC_EVENT_COMM:
+        fields += ["process_pid", "process_tgid", "comm"]
     elif event[0] == PROC_EVENT_EXIT:
         fields += ["process_pid", "process_tgid", "exit_code", "exit_signal"]
 
