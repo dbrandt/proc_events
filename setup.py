@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 kwargs = {
     "name": "pec",
-    "version": "0.1b.dev1",
+    "version": "0.1b0.dev1",
     "description": "Interface to the process event connector in linux kernels.",
     "author": "Daniel Brandt",
     "author_email": "me@dbrandt.se",
