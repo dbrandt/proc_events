@@ -1,7 +1,7 @@
 import struct
 import PEC
 from . import netlink
-
+from pec import DictWrapper
 CN_IDX_PROC = 0x1
 CN_VAL_PROC = 0x1
 
@@ -26,7 +26,7 @@ CN_VAL_PROC = 0x1
 # have to be incremental and done solely by the decoder of the
 # innermost data (in my case pec_decode() in pec.py).
 
-cn_msg = struct.Struct("4I2H")
+cn_msg = struct.Struct("=4I2H")
 
 def pack_msg(cb_idx, cb_val, flags, data):
     """
@@ -45,7 +45,7 @@ def unpack_msg(data):
     from data. This will return a DictWrapper object.
     """
     data = data[:cn_msg.size]  # Slice off trailing data
-    return PEC.DictWrapper(
+    return DictWrapper(
         zip(("cb_idx", "cb_val", "seq", "ack", "len", "flags"),
             cn_msg.unpack(data)))
 

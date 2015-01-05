@@ -1,6 +1,6 @@
 import os
 import struct
-import PEC
+from pec import DictWrapper
 
 NETLINK_CONNECTOR = 11
 
@@ -18,7 +18,7 @@ NLMSG_OVERRUN = 0x4  # Data lost
 #       __u32           nlmsg_pid;      /* Sending process port ID */
 # };
 
-nlmsghdr = struct.Struct("I2H2I")
+nlmsghdr = struct.Struct("=I2H2I")
 
 def netlink_pack(_type, flags, msg):
     """
@@ -32,6 +32,6 @@ def netlink_pack(_type, flags, msg):
     return nlmsghdr.pack(_len, _type, flags, seq, os.getpid()) + msg
 
 def unpack_hdr(data):
-    return PEC.DictWrapper(
+    return DictWrapper(
         zip(("len", "type", "flags", "seq", "pid"),
             nlmsghdr.unpack(data[:nlmsghdr.size])))

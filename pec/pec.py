@@ -4,9 +4,9 @@ import socket
 import struct
 from select import select
 
-import PEC
 from . import connector
 from . import netlink
+import pec import DictWrapper
 
 PROC_CN_MCAST_LISTEN = 0x1
 PROC_CN_MCAST_IGNORE = 0x2
@@ -28,14 +28,14 @@ pec_events = {'PROC_EVENT_NONE': PROC_EVENT_NONE,
 pec_events_rev = dict(zip(pec_events.values(),
                           pec_events.keys()))
 
-base_proc_event = struct.Struct("2IL")
+base_proc_event = struct.Struct("=2IL")
 
-event_struct_map = {PROC_EVENT_NONE: struct.Struct("I"),
-                    PROC_EVENT_FORK: struct.Struct("4I"),
-                    PROC_EVENT_EXEC: struct.Struct("2I"),
-                    PROC_EVENT_UID: struct.Struct("4I"),
-                    PROC_EVENT_GID: struct.Struct("4I"),
-                    PROC_EVENT_EXIT: struct.Struct("4I")}
+event_struct_map = {PROC_EVENT_NONE: struct.Struct("=I"),
+                    PROC_EVENT_FORK: struct.Struct("=4I"),
+                    PROC_EVENT_EXEC: struct.Struct("=2I"),
+                    PROC_EVENT_UID: struct.Struct("=4I"),
+                    PROC_EVENT_GID: struct.Struct("=4I"),
+                    PROC_EVENT_EXIT: struct.Struct("=4I")}
 
 process_list = []
 
@@ -52,7 +52,7 @@ def pec_control(s, listen=False):
     """
     Notify PEC if we want event notifications on this socket or not.
     """
-    pec_ctrl_data = struct.Struct("I")
+    pec_ctrl_data = struct.Struct("=I")
     if listen:
         action = PROC_CN_MCAST_LISTEN
     else:
@@ -99,7 +99,7 @@ def pec_unpack(data):
     elif event[0] == PROC_EVENT_EXIT:
         fields += ["process_pid", "process_tgid", "exit_code", "exit_signal"]
 
-    return PEC.DictWrapper(zip(fields, tuple(event) + event_data))
+    return DictWrapper(zip(fields, tuple(event) + event_data))
 
 def register_process(pid=None, process_name=None, events=(), action=None):
     """
@@ -142,4 +142,4 @@ def pec_loop(plist=process_list):
         buf = readable[0].recv(256)
         event = pec_unpack(buf)
         event["what"] = pec.pec_events_rev.get(event.what)
-        print event
+        yield event

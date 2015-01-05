@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import errno
 import struct
@@ -33,7 +34,7 @@ s = socket.socket(socket.AF_NETLINK,
 
 try:
     s.bind((os.getpid(), connector.CN_IDX_PROC))
-except socket.error, (_errno, errmsg):
+except socket.error as (_errno, errmsg):
     if _errno == errno.EPERM:
         print ("You don't have permission to bind to the "
                "process event connector. Try sudo.")
