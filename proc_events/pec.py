@@ -4,9 +4,8 @@ import socket
 import struct
 from select import select
 
-from . import connector
-from . import netlink
-from pec import DictWrapper
+from .utils import DictWrapper
+from . import netlink, connector
 
 PROC_CN_MCAST_LISTEN = 0x1
 PROC_CN_MCAST_IGNORE = 0x2

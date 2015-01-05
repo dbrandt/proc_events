@@ -1,6 +1,6 @@
 import os
 import struct
-from pec import DictWrapper
+from .utils import DictWrapper
 
 NETLINK_CONNECTOR = 11
 

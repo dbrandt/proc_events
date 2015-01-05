@@ -1,6 +1,6 @@
 import struct
 
-from . import DictWrapper
+from .utils import DictWrapper
 
 CN_IDX_PROC = 0x1
 CN_VAL_PROC = 0x1

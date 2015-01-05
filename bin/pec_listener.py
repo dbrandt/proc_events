@@ -4,9 +4,9 @@ import errno
 import socket
 from select import select
 
-import pec
-from pec import netlink
-from pec import connector
+import proc_events
+from proc_events import netlink
+from proc_events import connector
 
 def hex_dump(data):
     """
