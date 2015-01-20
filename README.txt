@@ -1,3 +1,7 @@
+BEWARE: This is not produciton software yet.
+        I originally wrote this in 2011 and suddenly had use for
+        it again and started to polish it. Look around and reuse
+        if you'd like to experiment before I'm done.
 
 proc_events
 -----------
