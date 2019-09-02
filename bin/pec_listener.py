@@ -4,7 +4,7 @@ import errno
 import socket
 from select import select
 
-import proc_events
+import proc_events as pec
 from proc_events import netlink
 from proc_events import connector
 
