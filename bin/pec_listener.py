@@ -14,11 +14,11 @@ def hex_dump(data):
     in GDB.
     """
     for i in xrange(len(data)):
-        print "0x%02x" % ord(data[i]),
+        print("0x%02x" % ord(data[i]))
         if i != 0 and not (i+1) % 8:
-            print
+            print("")
         else:
-            print "  ",
+            print("  ")
     print
 
 s = socket.socket(socket.AF_NETLINK,
@@ -31,7 +31,9 @@ s = socket.socket(socket.AF_NETLINK,
 
 try:
     s.bind((os.getpid(), connector.CN_IDX_PROC))
-except socket.error as (_errno, errmsg):
+# except socket.error as (_errno, errmsg):
+except socket.error as sock_err:
+    _errno, errmsg = sock_err
     if _errno == errno.EPERM:
         print ("You don't have permission to bind to the "
                "process event connector. Try sudo.")
@@ -45,7 +47,7 @@ while True:
     buf = readable[0].recv(256)
     event = pec.unpack(buf)
     event["what"] = pec.process_events_rev.get(event.what)
-    print event
+    print(event)
 
 pec.control(s, listen=False)
 

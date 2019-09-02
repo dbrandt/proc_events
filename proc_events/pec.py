@@ -144,7 +144,8 @@ def pec_loop(plist=process_list):
 
     try:
         pec_bind(s)
-    except socket.error, (_errno, errmsg):
+    except socket.error as sock_err:
+        _errno, errmsg = sock_err
         if _errno == errno.EPERM:
             raise Exception("You don't have permission to bind to the "
                             "process event connector. Try sudo.")
